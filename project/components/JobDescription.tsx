@@ -20,9 +20,9 @@ export default function JobDescription({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold mb-2">Job Description</h2>
+        <h2 className="text-lg font-semibold mb-2">Descripción del Trabajo</h2>
         <p className="text-sm text-muted-foreground mb-4">
-          Paste the job description or requirements to analyze compatibility
+          Proporcione una descripción detallada del trabajo para analizar la compatibilidad.
         </p>
         <Textarea
           placeholder="Enter job description..."
@@ -37,11 +37,11 @@ export default function JobDescription({
           {isLoading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Analyzing...
+              Analizando...
             </>
           ) : (
             <>
-              Analyze Compatibility
+              Analizar Compatibilidad
               <ArrowRight className="w-4 h-4 ml-2" />
             </>
           )}

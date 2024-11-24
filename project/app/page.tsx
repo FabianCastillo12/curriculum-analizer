@@ -4,6 +4,7 @@ import { FileText, Briefcase, Brain } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import axios from "axios";
 import dynamic from 'next/dynamic';
 
@@ -17,7 +18,7 @@ const AnalysisResults = dynamic(() => import('@/components/AnalysisResults'), {
   ssr: false
 });
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://miniature-spoon-6j5qjgg6v593rg7-8000.app.github.dev";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://ideal-invention-pxw4xrrv744364gq-8000.app.github.dev";
 
 export default function Home() {
   const [step, setStep] = useState(1);
@@ -26,6 +27,18 @@ export default function Home() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState<any>(null);
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setResume(event.target.files[0]);
+      console.log("File selected:", event.target.files[0]);
+    }
+  };
+
+  const handleJobDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setJobDescription(event.target.value);
+    console.log("Job description changed:", event.target.value);
+  };
+
   const handleAnalyze = async () => {
     if (!resume || !jobDescription) {
       toast.error("Please provide both a resume and job description");
@@ -33,9 +46,12 @@ export default function Home() {
     }
 
     setIsAnalyzing(true);
+    console.log("Starting analysis...");
+
     const formData = new FormData();
     formData.append("resume", resume);
     formData.append("job_description", JSON.stringify({ text: jobDescription }));
+    console.log("FormData created:", formData);
 
     try {
       const response = await axios.post(`${API_URL}/api/analyze`, formData, {
@@ -43,18 +59,28 @@ export default function Home() {
           "Content-Type": "multipart/form-data",
         },
       });
+      console.log("API response:", response.data);
       setAnalysisResults(response.data);
       setStep(3);
       toast.success("Analysis completed successfully!");
     } catch (error: any) {
       console.error("Error analyzing resume:", error);
       toast.error(
-        error.response?.data?.detail || 
+        error.response?.data?.detail ||
         "Failed to analyze resume. Please try again."
       );
     } finally {
       setIsAnalyzing(false);
+      console.log("Analysis finished.");
     }
+  };
+
+  const handleReset = () => {
+    setStep(1);
+    setResume(null);
+    setJobDescription("");
+    setAnalysisResults(null);
+    toast.info("Ready to upload a new resume and job description");
   };
 
   return (
@@ -63,11 +89,10 @@ export default function Home() {
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center space-y-4">
             <h1 className="text-4xl font-bold tracking-tight">
-              AI Resume Analyzer
+              Analizador de CVs
             </h1>
             <p className="text-muted-foreground">
-              Upload your resume and job description to get instant AI-powered
-              insights and recommendations
+              Sube tu CV y descripción del trabajo para obtener recomendaciones personalizadas.
             </p>
           </div>
 
@@ -75,30 +100,28 @@ export default function Home() {
             <div className="absolute left-0 right-0 h-2 top-1/2 -translate-y-1/2 bg-muted">
               <Progress value={(step / 3) * 100} className="h-2" />
             </div>
-            <div className="relative flex justify-between">
+            <div className="relative flex justify-around">
               {[
-                { icon: FileText, label: "Upload Resume" },
-                { icon: Briefcase, label: "Job Details" },
-                { icon: Brain, label: "AI Analysis" },
+                { icon: FileText, label: "Subir CV" },
+                { icon: Briefcase, label: "Detalles del Trabajo" },
+                { icon: Brain, label: "Análisis AI" },
               ].map((item, index) => (
                 <div
                   key={index}
-                  className={`flex flex-col items-center gap-2 ${
-                    step > index + 1
+                  className={`flex flex-col items-center gap-2 ${step > index + 1
                       ? "text-primary"
                       : step === index + 1
-                      ? "text-primary"
-                      : "text-muted-foreground"
-                  }`}
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    }`}
                 >
                   <div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                      step > index + 1
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${step > index + 1
                         ? "bg-primary text-primary-foreground"
                         : step === index + 1
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
-                    }`}
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted"
+                      }`}
                   >
                     <item.icon className="w-5 h-5" />
                   </div>
@@ -114,7 +137,8 @@ export default function Home() {
                 onFileSelect={(file) => {
                   setResume(file);
                   setStep(2);
-                  toast.success("Resume uploaded successfully!");
+                    toast.success("¡CV subido con éxito!");
+                    console.log("CV subido:", file);
                 }}
               />
             )}
@@ -128,8 +152,17 @@ export default function Home() {
               />
             )}
 
-            {step === 3 && analysisResults && (
-              <AnalysisResults results={analysisResults} />
+            {step === 3 && (
+              <>
+                {analysisResults ? (
+                  <AnalysisResults recommendations={analysisResults} />
+                ) : (
+                  <p>Cargando resultados...</p>
+                )}
+                <Button onClick={handleReset} className="mt-4">
+                  Subir nuevo CV y descripción del trabajo
+                </Button>
+              </>
             )}
           </Card>
         </div>

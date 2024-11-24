@@ -9,7 +9,7 @@ app = FastAPI()
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://miniature-spoon-6j5qjgg6v593rg7-8000.app.github.dev"],  # In production, replace with specific origins
+    allow_origins=["*"],  # In production, replace with specific origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

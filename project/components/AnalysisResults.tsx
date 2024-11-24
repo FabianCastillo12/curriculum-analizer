@@ -4,7 +4,6 @@ import {
   CheckCircle2,
   XCircle,
   TrendingUp,
-  Award,
   BookOpen,
 } from "lucide-react";
 import {
@@ -14,35 +13,38 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 interface AnalysisResultsProps {
-  results: {
-    score: number;
-    skills: {
-      match: string[];
-      missing: string[];
+  recommendations: {
+    recommendations: {
+      match_percentage: number;
+      skills_comparison: {
+        matching_skills: string[];
+        missing_skills: string[];
+      };
+      missing_experience: string[];
+      presentation_improvements: string[];
+      customization_suggestions: string[];
     };
-    experience: {
-      years: number;
-      relevance: number;
-    };
-    recommendations: string[];
-  };
+  }
 }
 
-export default function AnalysisResults({ results }: AnalysisResultsProps) {
+export default function AnalysisResults({ recommendations }: AnalysisResultsProps) {
+  console.log("AnalysisResults props 2:", recommendations);
+  console.log("Matching skills:", recommendations.recommendations.skills_comparison.matching_skills);
   return (
     <div className="space-y-6">
       <div className="text-center">
         <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-primary/10">
-          <div className="text-3xl font-bold text-primary">{results.score}%</div>
+          <div className="text-3xl font-bold text-primary">
+            {recommendations.recommendations.match_percentage}%
+          </div>
         </div>
-        <h2 className="text-2xl font-bold mt-4">Match Score</h2>
+        <h2 className="text-2xl font-bold mt-4">Puntuación de Coincidencia</h2>
         <p className="text-muted-foreground">
-          Based on your resume and the job requirements
+          Basado en tu currículum y los requisitos del trabajo
         </p>
       </div>
 
@@ -51,12 +53,12 @@ export default function AnalysisResults({ results }: AnalysisResultsProps) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-green-500" />
-              Matching Skills
+              Habilidades Coincidentes
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {results.skills.match.map((skill) => (
+              {recommendations.recommendations.skills_comparison.matching_skills.map((skill) => (
                 <Badge key={skill} variant="secondary">
                   {skill}
                 </Badge>
@@ -69,12 +71,12 @@ export default function AnalysisResults({ results }: AnalysisResultsProps) {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <XCircle className="w-5 h-5 text-destructive" />
-              Missing Skills
+              Habilidades Faltantes
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {results.skills.missing.map((skill) => (
+              {recommendations.recommendations.skills_comparison.missing_skills.map((skill) => (
                 <Badge key={skill} variant="outline">
                   {skill}
                 </Badge>
@@ -88,42 +90,12 @@ export default function AnalysisResults({ results }: AnalysisResultsProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <TrendingUp className="w-5 h-5" />
-            Experience Analysis
+            Experiencia Faltante
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div>
-            <div className="flex justify-between mb-2">
-              <span className="text-sm font-medium">Experience Relevance</span>
-              <span className="text-sm text-muted-foreground">
-                {results.experience.relevance}%
-              </span>
-            </div>
-            <Progress value={results.experience.relevance} className="h-2" />
-          </div>
-          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-            <div className="flex items-center gap-3">
-              <Award className="w-5 h-5" />
-              <div className="font-medium">Years of Experience</div>
-            </div>
-            <div className="text-2xl font-bold">{results.experience.years}</div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5" />
-            Recommendations
-          </CardTitle>
-          <CardDescription>
-            Suggestions to improve your resume for this position
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
           <ul className="space-y-3">
-            {results.recommendations.map((recommendation, index) => (
+            {recommendations.recommendations.missing_experience.map((experience, index) => (
               <li
                 key={index}
                 className="flex items-start gap-3 p-3 bg-muted rounded-lg"
@@ -131,16 +103,67 @@ export default function AnalysisResults({ results }: AnalysisResultsProps) {
                 <span className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium">
                   {index + 1}
                 </span>
-                <span>{recommendation}</span>
+                <span>{experience}</span>
               </li>
             ))}
           </ul>
         </CardContent>
       </Card>
 
-      <div className="flex justify-center">
-        <Button>Download Full Report</Button>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5" />
+            Mejoras en la Presentación
+          </CardTitle>
+          <CardDescription>
+            Sugerencias para mejorar la presentación de tu currículum
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-3">
+            {recommendations.recommendations.presentation_improvements.map((improvement, index) => (
+              <li
+                key={index}
+                className="flex items-start gap-3 p-3 bg-muted rounded-lg"
+              >
+                <span className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium">
+                  {index + 1}
+                </span>
+                <span>{improvement}</span>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="w-5 h-5" />
+            Sugerencias de Personalización
+          </CardTitle>
+          <CardDescription>
+            Sugerencias para personalizar tu currículum para este puesto
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-3">
+            {recommendations.recommendations.customization_suggestions.map((suggestion, index) => (
+              <li
+                key={index}
+                className="flex items-start gap-3 p-3 bg-muted rounded-lg"
+              >
+                <span className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center text-sm font-medium">
+                  {index + 1}
+                </span>
+                <span>{suggestion}</span>
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+
     </div>
   );
 }

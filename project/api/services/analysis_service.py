@@ -23,6 +23,7 @@ class CVAnalysisService:
             f"2. Identificar cualquier experiencia relevante que falta en el CV con respecto a la oferta de trabajo.\n"
             f"3. Sugerir cómo mejorar la presentación del CV, como la claridad, la estructura o el diseño.\n"
             f"4. Dar sugerencias sobre cómo personalizar el CV para resaltar mejor los puntos que coinciden con la oferta.\n\n"
+            f"5. Dar un porcentaje al final de la evaluación de la adecuación del CV al trabajo.\n\n"
             f"Tu respuesta **debe estar en formato JSON** y seguir estrictamente esta estructura:\n\n"
             f"{{\n"
             f'  "skills_comparison": {{\n'
@@ -32,9 +33,11 @@ class CVAnalysisService:
             f'  "missing_experience": ["..."],\n'
             f'  "presentation_improvements": ["..."],\n'
             f'  "customization_suggestions": ["..."]\n'
+            f'  "match_percentage": "xx"\n'
             f"}}\n\n"
             f"Si algún apartado no aplica, incluye una lista vacía (por ejemplo, \"missing_experience\": []). "
             f"No proporciones ningún texto fuera del formato JSON especificado."
+            f"EL CONTENIDO DEBE SER BIEN ESPECIFICO Y DETALLADO Y EN ESPAÑOL."
         )
         
         # Crear el cuerpo de la solicitud

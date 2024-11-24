@@ -6,8 +6,8 @@ import { Toaster } from 'sonner';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'AI Resume Analyzer',
-  description: 'Analyze your resume with AI-powered insights',
+  title: 'Analizador de CVs',
+  description: 'Analiza tu currículum con información impulsada por IA',
 };
 
 export default function RootLayout({
