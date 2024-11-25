@@ -6,7 +6,7 @@ import { Toaster } from 'sonner';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Analizador de CVs',
+  title: 'Analizador de CV',
   description: 'Analiza tu currículum con información impulsada por IA',
 };
 
