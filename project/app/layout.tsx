@@ -17,6 +17,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Enlace al archivo manifest.json */}
+        <link rel="manifest" href="/manifest.json" />
+
+        {/* Metaetiquetas para la PWA */}
+        <meta name="theme-color" content="#000000" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+      </head>
       <body className={inter.className}>
         {children}
         <Toaster position="top-center" richColors />
